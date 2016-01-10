@@ -38,3 +38,8 @@ docker run -v /app:/src/results -ti fiwimaps bash
 docker run -v /app:/src/results -ti caracena/fiwimaps bash
 ```
 
+## Reference 
+
+The open cv installation process was extracted from http://www.pyimagesearch.com/2015/06/22/install-opencv-3-0-and-python-2-7-on-ubuntu/
+
+The saliency map codes were extracted from https://github.com/mayoYamasaki/saliency-map and http://www.tatome.de/fileadmin/code/saliency.py

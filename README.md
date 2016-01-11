@@ -31,7 +31,12 @@ docker run -v /app:/src/results -ti fiwimaps bash
 - Code inside the container and if you want to extract your work from it, just dump it in the /src/results folder and look for it in /app in your host machine.
 
 
-## How to use with image from docker hub (coming soon)
+## How to use with image from docker hub
+
+- Pull image from docker hub
+```
+docker pull caracena/fiwimaps
+```
 
 - Run container
 ```

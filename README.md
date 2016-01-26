@@ -16,20 +16,22 @@ git checkout 3.1.0
 cd ..
 ```
 
-- Paste folder with [stimuli images](https://www.ece.nus.edu.sg/stfpage/eleqiz/webpage_saliency.html) inside this repo
+- Paste folder with [stimuli images](https://www.ece.nus.edu.sg/stfpage/eleqiz/webpage_saliency.html) inside this repo (folder name has to be `stimuli`)
 
 - Build image
 ```
 docker build -t fiwimaps .
 ```
 
-- Run container
+- Run container: This is going to generate saliency maps files (txt) in /app folder in your host machine. 
+```
+docker run -v /app:/src/results fiwimaps 
+```
+
+- Run container in command line: You can access to the container environment and playing around. Code inside the container and if you want to extract your work from it, just dump it in the /src/results folder and look for it in /app in your host machine.
 ```
 docker run -v /app:/src/results -ti fiwimaps bash
 ```
-
-- Code inside the container and if you want to extract your work from it, just dump it in the /src/results folder and look for it in /app in your host machine.
-
 
 ## How to use with image from docker hub
 
@@ -40,7 +42,7 @@ docker pull caracena/fiwimaps
 
 - Run container
 ```
-docker run -v /app:/src/results -ti caracena/fiwimaps bash
+docker run -v /app:/src/results caracena/fiwimaps
 ```
 
 ## Reference 

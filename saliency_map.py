@@ -23,7 +23,7 @@ class GaussianPyramid:
         amax = np.amax(src)
         b, g, r = cv.split(src)
         for x in xrange(1, 9):
-            #b, g, r = map(cv.pyrDown, [b, g, r])
+            b, g, r = map(cv.pyrDown, [b, g, r])
             if x < 2:
                 continue
             buf_its = np.zeros(b.shape)

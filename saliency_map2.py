@@ -26,9 +26,6 @@
 #
 
 import sys
-
-sys.path.append('/usr/local/lib/python2.7/site-packages')
-
 import math
 import logging
 import cv2
@@ -121,7 +118,7 @@ def intensityConspicuity(image):
 	"""
 		Creates the conspicuity map for the channel `intensity'.
 	"""
-	fs = features(image = im, channel = intensity)
+	fs = features(image,intensity)
 	return sumNormalizedFeatures(fs)
 
 def gaborConspicuity(image, steps):
@@ -132,7 +129,7 @@ def gaborConspicuity(image, steps):
 	for step in range(steps):
 		theta = step * (math.pi/steps)
 		gaborFilter = makeGaborFilter(dims=(10,10), lambd=2.5, theta=theta, psi=math.pi/2, sigma=2.5, gamma=.5)
-		gaborFeatures = features(image = intensity(im), channel = gaborFilter)
+		gaborFeatures = features(image,gaborFilter)
 		summedFeatures = sumNormalizedFeatures(gaborFeatures)
 		gaborConspicuity += (N(summedFeatures)).astype(gaborConspicuity.dtype)
 	return gaborConspicuity
@@ -145,7 +142,7 @@ def rgConspicuity(image):
 	def rg(image):
 		r,g,_,__ = cv2.split(image)
 		return cv2.absdiff(r,g)
-	fs = features(image = image, channel = rg)
+	fs = features(image, rg)
 	return sumNormalizedFeatures(fs)
 
 def byConspicuity(image):
@@ -156,7 +153,7 @@ def byConspicuity(image):
 	def by(image):
 		_,__,b,y = cv2.split(image)
 		return cv2.absdiff(b,y)
-	fs = features(image = image, channel = by)
+	fs = features(image, by)
 	return sumNormalizedFeatures(fs)
 
 def sumNormalizedFeatures(features, levels=9, startSize=(640,480)):
@@ -247,6 +244,19 @@ def markMaxima(saliency):
 	marked = cv2.merge((b,g,r))
 	return marked
 
+class SaliencyMap2:
+	def __init__(self, src):
+		im = cv2.imread(src, cv2.COLOR_BGR2RGB)
+		if im is None:
+			logger.fatal("Could not load file \"%s.\"", src)
+			sys.exit()
+		self.intensty = intensityConspicuity(im)
+		self.gabor = gaborConspicuity(im, 4)
+		im = makeNormalizedColorChannels(im)
+		self.rg = rgConspicuity(im)
+		self.by = byConspicuity(im)
+		self.c = self.rg + self.by
+		self.saliency = 1./3 * (N(self.intensty) + N(self.c) + N(self.gabor))
 
 if __name__ == "__main__":
 	logging.basicConfig(level=logging.DEBUG)

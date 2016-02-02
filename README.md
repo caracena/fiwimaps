@@ -45,6 +45,26 @@ docker pull caracena/fiwimaps
 docker run -v /app:/src/results caracena/fiwimaps
 ```
 
+## How to create reduced fixation matrix files
+
+The steps for doing this process are similar than the steps for creating saliency maps:
+
+- Include the folder with fixation files for each subject and page (also you can do it with aggregate fixation files for all users for a page) 
+- Build the image as same as before
+```
+docker build -t fiwimaps .
+```
+- Run the container but now the volume where the files will be published is different (folder app in your host machine will be overwritten)
+```
+docker run -ti -v /app:/src/matrix fiwimaps bash 
+```
+- When you are inside of the container run the script
+```
+python filestoredumatrix.py
+```
+The output will be a log of which files are being processed and you have to check app folder to the output files
+
+
 ## Reference 
 
 The open cv installation process was extracted from http://www.pyimagesearch.com/2015/06/22/install-opencv-3-0-and-python-2-7-on-ubuntu/

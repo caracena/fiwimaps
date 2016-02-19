@@ -33,18 +33,6 @@ docker run -v /app:/src/results fiwimaps
 docker run -v /app:/src/results -ti fiwimaps bash
 ```
 
-## How to use with image from docker hub
-
-- Pull image from docker hub
-```
-docker pull caracena/fiwimaps
-```
-
-- Run container
-```
-docker run -v /app:/src/results caracena/fiwimaps
-```
-
 ## How to create reduced fixation matrix files
 
 The steps for doing this process are similar than the steps for creating saliency maps:
@@ -64,6 +52,35 @@ python filestoredumatrix.py
 ```
 The output will be a log of which files are being processed and you have to check app folder to the output files
 
+## How to create face detection files
+
+The steps for doing this process are similar than the steps for creating saliency maps:
+
+- Build the image as same as before
+```
+docker build -t fiwimaps .
+```
+- Run the container but now the volume where the files will be published is different (folder app in your host machine will be overwritten)
+```
+docker run -ti -v /app:/src/faces fiwimaps bash 
+```
+- When you are inside of the container run the script
+```
+python facedetection.py
+```
+The output will be a log of which files are being processed and you have to check app folder to the output files. Each row in the outputs files is a face detection rectangule where the first parameter is the x position, second y position, third width and fourth height.
+
+## How to use with image from docker hub
+
+- Pull image from docker hub
+```
+docker pull caracena/fiwimaps
+```
+
+- Run container
+```
+docker run -v /app:/src/results caracena/fiwimaps
+```
 
 ## Reference 
 

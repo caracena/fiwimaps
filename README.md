@@ -70,6 +70,24 @@ python facedetection.py
 ```
 The output will be a log of which files are being processed and you have to check app folder to the output files. Each row in the outputs files is a face detection rectangule where the first parameter is the x position, second y position, third width and fourth height.
 
+## How to create edge detection files
+
+The steps for doing this process are similar than the steps for creating saliency maps:
+
+- Build the image as same as before
+```
+docker build -t fiwimaps .
+```
+- Run the container but now the volume where the files will be published is different (folder app in your host machine will be overwritten)
+```
+docker run -ti -v /app:/src/edges fiwimaps bash 
+```
+- When you are inside of the container run the script
+```
+python edgedetection.py
+```
+The output will be a log of which files are being processed and you have to check app folder to the output files. Each file is the matrix of the detected edges, so if you plot that matrix you get the image of the edges of the original image.
+
 ## How to use with image from docker hub
 
 - Pull image from docker hub

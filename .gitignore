@@ -2,3 +2,4 @@ opencv/
 opencv_contrib/
 stimuli/
 files/
+.idea/

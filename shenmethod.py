@@ -10,8 +10,9 @@ def make_gaussian_pyramid(src):
             'orientations': {'0': [], '45': [], '90': [], '135': []}}
     src = rgb2dklCart(src)
     b, g, r = cv.split(src)
-    cs_index = ((0, 3), (0, 4), (1, 4), (1, 5), (2, 5), (2, 6))
-    for i in xrange(0, 7):
+    cs_index2 = ((0, 2), (0, 3), (1, 3), (1, 4), (2, 4), (2, 5))
+    cs_index = ((0, 1), (0, 2), (1, 2), (1, 3), (2, 3), (2, 4))
+    for i in xrange(0, 6):
 
         b, g, r = map(cv.pyrDown, [b, g, r])
         maps['colors']['b'].append(b)
@@ -25,12 +26,23 @@ def make_gaussian_pyramid(src):
         for (orientation, index) in zip(sorted(maps['orientations'].keys()), xrange(4)):
             maps['orientations'][orientation].append(conv_gabor(buf_its, np.pi * index / 4))
 
-    map1 = {}
-    map1['intensity'] = []
+    maps1 = {'colors': {'b': [], 'g': [], 'r': []}}
     for c, s in cs_index:
-        map1['intensity'].append(scale_diff(maps['intensity'][c], maps['intensity'][s]))
+        for color in sorted(maps1['colors']):
+            maps1['colors'][color].append(scale_diff(maps['colors'][color][c], maps['colors'][color][s]))
 
-    maps['intensity'] = map1['intensity']
+    maps['colors'] = maps1['colors']
+
+    maps1 = {'colors': {'b': [], 'g': [], 'r': []},
+            'orientations': {'0': [], '45': [], '90': [], '135': []}}
+    for c, s in cs_index2:
+        for color in sorted(maps1['colors']):
+            maps1['colors'][color].append(scale_diff(maps['colors'][color][c], maps['colors'][color][s]))
+        for orientation in sorted(maps['orientations']):
+            maps1['orientations'][orientation].append(scale_diff(maps['orientations'][orientation][c], maps['orientations'][orientation][s]))
+
+    maps = maps1
+
     return maps
 
 def scale_diff(c, s):
@@ -89,8 +101,6 @@ for f in onlyfiles:
     src = oi.imread('stimuli/'+f)
     sm = make_gaussian_pyramid(src)
 
-    for i in xrange(0,len(sm['intensity'])):
-        cv.imwrite( 'results/intensity'+str(i)+f, np.uint8(u.normalize_range(sm['intensity'][i])))
     for key in sm['colors']:
         for i in xrange(0,len(sm['colors'][key])):
             cv.imwrite( 'results/colors'+key+str(i)+f, np.uint8(u.normalize_range(sm['colors'][key][i])))
